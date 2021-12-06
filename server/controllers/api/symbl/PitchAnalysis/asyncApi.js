@@ -6,7 +6,7 @@ import ytdl from 'ytdl-core';
 import fs from 'fs'
 import { getAbuseAnalysis, getEmotionAnalysis, getIntentAnalysis, getSarcasmAnalysis } from '../../Komprehend/komprehend.js';
 import AnalysisData from '../../../../models/analysisDataModel.js';
-import { getModzySentiments, getModzySummary } from '../../modzy/modzy.js';
+import { getModzySentiments, getModzySummary, getNamedEntities } from '../../modzy/modzy.js';
 
 const startPitchAnalysis = async (authToken, path, meetingName, callback) => {
 
@@ -57,16 +57,17 @@ const startPitchAnalysis = async (authToken, path, meetingName, callback) => {
                             modzyData[key] = { "input.txt": data.messages.messages[i].text }
                             texts.push(data.messages.messages[i].text)
                         }
-                        let [emotion, sarcasm, intent, profaneWord, modzySentiments, modzySummary] = [getEmotionAnalysis(texts), getSarcasmAnalysis(texts), getIntentAnalysis(texts), getAbuseAnalysis(texts), getModzySentiments(modzyData), getModzySummary(modzyData)]
-                        await Promise.allSettled([emotion, sarcasm, intent, profaneWord, modzySentiments, modzySummary])
+                        let [emotion, sarcasm, intent, profaneWord, modzySentiments, modzySummary, modzyEntities] = [getEmotionAnalysis(texts), getSarcasmAnalysis(texts), getIntentAnalysis(texts), getAbuseAnalysis(texts), getModzySentiments(modzyData), getModzySummary(modzyData), getNamedEntities(modzyData)]
+                        await Promise.allSettled([emotion, sarcasm, intent, profaneWord, modzySentiments, modzySummary, modzyEntities])
                             .then(async response => {
-                                console.log(response, "yyyyy", response[4].value, "******************", response[5].value)
+                                console.log(response, "yyyyy", response[4].value, "**", response[5].value)
                                 ans['emotion'].push(response[0].value)
                                 ans['sarcasm'].push(response[1].value)
                                 ans['intent'].push(response[2].value)
                                 ans['profaneWord'].push(response[3].value)
-                                // ans['modzySentiment'].push(response[4].value)
-                                // ans['modzySummary'].push(response[5].value)
+                                ans['modzySentiment'].push(response[4].value)
+                                ans['modzySummary'].push(response[5].value)
+                                ans['modzyEntitites'].push(response[6].value)
                                 data['extraAnalysis'] = ans
                                 callback(null, data)
                             })
