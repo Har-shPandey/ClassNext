@@ -62,7 +62,7 @@ const Chat = () => {
     // useEffect(() => {
     //     localStorage.setItem('chatData', JSON.stringify(chatList))
     // }, [chatList])
-    const socket = io('ws://localhost:300/', { transports: ['websocket'] });
+    const socket = io('wss://class-next.herokuapp.com/', { transports: ['websocket'] });
 
     useEffect(() => {
         // dispatch(getChat())
