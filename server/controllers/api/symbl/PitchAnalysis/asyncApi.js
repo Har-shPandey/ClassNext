@@ -49,6 +49,10 @@ const startPitchAnalysis = async (authToken, path, meetingName, callback) => {
                             'sarcasm': [],
                             'intent': [],
                             'profaneWord': [],
+                            'modzySentiment': [],
+                            'modzySummary': [],
+                            'modzyEntitites': []
+
                         }
                         let texts = []
                         var modzyData = {}
